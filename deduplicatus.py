@@ -1,11 +1,23 @@
-"""Usage:
-  quick_example.py tcp <host> <port> [--timeout=<seconds>]
-  quick_example.py serial <port> [--baud=9600] [--timeout=<seconds>]
-  quick_example.py -h | --help | --version
+"""
+DeDuplicatus: A Deduplication-Enabled Multi-Cloud App
+
+Usage:
+  deduplicatus.py sync
+  deduplicatus.py config
+
+Options:
+  -h --help            show this help message and exit
+  --version            show version and exit
 """
 from docopt import docopt
 
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='0.1.1rc')
-    print(arguments)
+    arguments = docopt(__doc__, version='0.1.0')
+
+    if arguments['sync']:
+        pass
+    elif arguments['config']:
+        pass
+    else:
+        print arguments
