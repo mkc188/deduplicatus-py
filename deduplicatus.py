@@ -16,7 +16,10 @@ import time
 import threading
 import json
 import getpass
+import hirlite
 
+from watchdog.observers import Observer
+from watchdog.events import LoggingEventHandler
 from docopt import docopt
 from mega import (MegaApi, MegaListener, MegaError, MegaRequest, MegaNode)
 
@@ -276,6 +279,7 @@ def worker(api, listener, executor, credentials):
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='0.1.0')
+    rlite = hirlite.Rlite(path='mydb.rld')
 
     # Set up logging.
     logging.basicConfig(level=logging.INFO,
@@ -283,6 +287,12 @@ if __name__ == '__main__':
                         format='%(levelname)s\t%(asctime)s (%(threadName)-10s) %(message)s')
 
     if arguments['sync']:
+        path = '.'
+        event_handler = LoggingEventHandler()
+        observer = Observer()
+        observer.schedule(event_handler, path, recursive=True)
+        observer.start()
+
 
         logging.info('Obtaining Mega login credentials.')
         credentials = {'user': 'pui39296@zasod.com', 'password': 'mkc@910115'}
@@ -297,6 +307,15 @@ if __name__ == '__main__':
         start_time = time.time()
         worker(api, listener, executor, credentials)
         logging.info('Total time taken: {} s'.format(time.time() - start_time))
+
+
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
+
 
     elif arguments['config']:
         pass
