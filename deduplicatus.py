@@ -25,6 +25,7 @@ from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from docopt import docopt
 from mega import (MegaApi, MegaListener, MegaError, MegaRequest, MegaNode)
+from pysqlightning import dbapi2 as sqlite
 
 APP_KEY = 'AsRG2QwC'
 
@@ -289,6 +290,16 @@ if __name__ == '__main__':
                         format='%(levelname)s\t%(asctime)s (%(threadName)-10s) %(message)s')
 
     if arguments['FILE']:
+        conn = sqlite.connect('mydb')
+        c = conn.cursor()
+        c.execute('''create table file
+        (path text, checksum text, size integer,
+         created_time integer, last_modified integer)''')
+        conn.commit()
+        c.close()
+
+
+
         path = arguments['FILE']
         event_handler = LoggingEventHandler()
         observer = Observer()
