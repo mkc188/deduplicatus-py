@@ -1,3 +1,4 @@
 watchdog==0.8.3
 docopt==0.6.2
-megasdk==2.6.0
+# megasdk==2.6.0
+lmdb==0.92
