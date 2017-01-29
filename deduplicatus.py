@@ -296,19 +296,20 @@ if __name__ == '__main__':
         observer.start()
 
 
-        logging.info('Obtaining Mega login credentials.')
-        credentials = {'user': 'pui39296@zasod.com', 'password': 'mkc@910115'}
-
-        # Create the required Mega API objects.
-        executor = AsyncExecutor()
-        api = MegaApi(APP_KEY, None, None, 'Python CRUD example')
-        listener = AppListener(executor.continue_event)
-        api.addListener(listener)
-
-        # Run the operations.
-        start_time = time.time()
-        worker(api, listener, executor, credentials)
-        logging.info('Total time taken: {} s'.format(time.time() - start_time))
+#         # Get credentials.
+#         logging.info('Obtaining Mega login credentials.')
+#         credentials = {'user': 'pui39296@zasod.com', 'password': 'mkc@910115'}
+# 
+#         # Create the required Mega API objects.
+#         executor = AsyncExecutor()
+#         api = MegaApi(APP_KEY, None, None, 'Python CRUD example')
+#         listener = AppListener(executor.continue_event)
+#         api.addListener(listener)
+# 
+#         # Run the operations.
+#         start_time = time.time()
+#         worker(api, listener, executor, credentials)
+#         logging.info('Total time taken: {} s'.format(time.time() - start_time))
 
 
         try:
