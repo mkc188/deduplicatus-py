@@ -289,7 +289,7 @@ if __name__ == '__main__':
                         format='%(levelname)s\t%(asctime)s (%(threadName)-10s) %(message)s')
 
     if arguments['FILE']:
-        path = '.'
+        path = arguments['FILE']
         event_handler = LoggingEventHandler()
         observer = Observer()
         observer.schedule(event_handler, path, recursive=True)
