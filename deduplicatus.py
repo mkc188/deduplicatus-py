@@ -1,9 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 DeDuplicatus: A Deduplication-Enabled Multi-Cloud App
 
 Usage:
-  deduplicatus.py sync
-  deduplicatus.py config
+  deduplicatus.py [options] FILE
+
+Arguments:
+  FILE                 config file
 
 Options:
   -h --help            show this help message and exit
@@ -16,7 +20,6 @@ import time
 import threading
 import json
 import getpass
-import hirlite
 
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
@@ -279,14 +282,13 @@ def worker(api, listener, executor, credentials):
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='0.1.0')
-    rlite = hirlite.Rlite(path='mydb.rld')
 
     # Set up logging.
     logging.basicConfig(level=logging.INFO,
                         #filename='runner.log',
                         format='%(levelname)s\t%(asctime)s (%(threadName)-10s) %(message)s')
 
-    if arguments['sync']:
+    if arguments['FILE']:
         path = '.'
         event_handler = LoggingEventHandler()
         observer = Observer()
@@ -315,9 +317,5 @@ if __name__ == '__main__':
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
-
-
-    elif arguments['config']:
-        pass
     else:
         print arguments
