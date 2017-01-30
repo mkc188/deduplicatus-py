@@ -20,6 +20,7 @@ import time
 import threading
 import json
 import getpass
+import traceback
 
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
@@ -280,6 +281,21 @@ def worker(api, listener, executor, credentials):
     listener.root_node = None
     logging.info('*** done: logout ***')
 
+class MyHandler(LoggingEventHandler):
+    def on_created(self, event):
+        conn = sqlite.connect('mydb')
+        c = conn.cursor()
+        c.execute('''insert or ignore into file values ((?), '2', '3', 4, 5)''', (event.src_path[len(path):], ))
+        conn.commit()
+
+        print '--------'
+        c.execute('select * from file')
+        for row in c:
+          print row
+        c.close()
+        print '--------'
+        print event.src_path
+
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='0.1.0')
@@ -290,18 +306,32 @@ if __name__ == '__main__':
                         format='%(levelname)s\t%(asctime)s (%(threadName)-10s) %(message)s')
 
     if arguments['FILE']:
+        path = arguments['FILE']
+
         conn = sqlite.connect('mydb')
         c = conn.cursor()
-        c.execute('''create table file
-        (path text, checksum text, size integer,
-         created_time integer, last_modified integer)''')
-        conn.commit()
+        try:
+          c.execute('''create table file
+          (path text unique, checksum text, size integer,
+           created_time integer, last_modified integer)''')
+          conn.commit()
+        except:
+          # print traceback.format_exc()
+          pass
+        
+        fileList = [os.path.join(dp, f)[len(path):] for dp, dn, fn in os.walk(path) for f in fn]
+        for f in fileList:
+          c.execute('''insert or ignore into file values ((?), '2', '3', 4, 5)''', (f, ))
+          conn.commit()
+
+        c.execute('select * from file')
+        for row in c:
+          print row
+
         c.close()
 
 
-
-        path = arguments['FILE']
-        event_handler = LoggingEventHandler()
+        event_handler = MyHandler()
         observer = Observer()
         observer.schedule(event_handler, path, recursive=True)
         observer.start()
